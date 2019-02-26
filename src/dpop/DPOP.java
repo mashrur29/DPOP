@@ -31,7 +31,8 @@ public class DPOP {
         nonDistributedClusterRemoving removeCluster = new nonDistributedClusterRemoving(sim.graph);
         removeCluster.removeCluster();
         
-        
+        BFSDPOP dpop = new BFSDPOP(sim.graph);
+        dpop.executeBfsDpop();
         
         Instant finish = Instant.now();
         double timeElapsed = Duration.between(start, finish).toMillis();

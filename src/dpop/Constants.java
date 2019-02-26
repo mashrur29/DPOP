@@ -17,4 +17,5 @@ public class Constants {
     public static int max_int = 10000000;
     public static int domainStart = 1;
     public static int domainEnd = 3;
+    public static int restricted = -1;
 }

@@ -17,7 +17,7 @@ public class BfsTree {
     Node node1 = new Node(1);
     Node node2 = new Node(2);
     Node node3 = new Node(3);
-    int constraints[][][][] = new int[Constants.maxAgents][Constants.maxAgents][Constants.maxAgents][Constants.maxAgents];
+    public static int constraints[][][][] = new int[Constants.maxAgents][Constants.maxAgents][Constants.maxAgents][Constants.maxAgents];
     
     void simulation1() {
         nodeCnt = Constants.nodeCnt;
@@ -50,27 +50,27 @@ public class BfsTree {
         
         for(int i=Constants.domainStart; i<=Constants.domainEnd; i++) {
             for(int j=Constants.domainStart; j<=Constants.domainEnd; j++) {
-                constraints[1][2][i][j] = 2;
-                constraints[2][1][j][i] = 2;
+                BfsTree.constraints[1][2][i][j] = 2;
+                BfsTree.constraints[2][1][j][i] = 2;
             }
         }
         
         for(int i=Constants.domainStart; i<=Constants.domainEnd; i++) {
             for(int j=Constants.domainStart; j<=Constants.domainEnd; j++) {
-                constraints[1][3][i][j] = 3;
-                constraints[3][1][j][i] = 3;
+                BfsTree.constraints[1][3][i][j] = 3;
+                BfsTree.constraints[3][1][j][i] = 3;
             }
         }
         
         for(int i=Constants.domainStart; i<=Constants.domainEnd; i++) { // Hard Constraint
             for(int j=Constants.domainStart; j<=Constants.domainEnd; j++) {
                 if(i < j) {
-                    constraints[2][3][i][j] = 0;
-                    constraints[3][2][j][i] = 0;
+                    BfsTree.constraints[2][3][i][j] = 0;
+                    BfsTree.constraints[3][2][j][i] = 0;
                 }
                 else {
-                    constraints[2][3][i][j] = Constants.max_int;
-                    constraints[3][2][j][i] = Constants.max_int;
+                    BfsTree.constraints[2][3][i][j] = Constants.max_int;
+                    BfsTree.constraints[3][2][j][i] = Constants.max_int;
                 }
             }
         }

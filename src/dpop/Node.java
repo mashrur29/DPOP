@@ -28,6 +28,8 @@ public class Node extends Thread {
     public int neighborCount;
     public int id;
     public List<Integer> domain = new LinkedList<Integer>();
+    public boolean locallyReducible = true;
+    public int valueAssigned = Constants.restricted;
 
     public Node(int id) {
         parent = null;
@@ -36,7 +38,7 @@ public class Node extends Thread {
         this.id = id;
     }
 
-    public Node(Node parent, List child, List pseudoNeighbor, int level, List neighbors, int neighborCount, int id) {
+    public Node(Node parent, List child, List pseudoNeighbor, int level, List neighbors, int neighborCount, int id, List<Integer> domain, boolean locallyReducible, int valueAssigned) {
         this.parent = parent;
         this.child = child;
         this.pseudoNeighbor = pseudoNeighbor;
@@ -44,10 +46,13 @@ public class Node extends Thread {
         this.neighbors = neighbors;
         this.neighborCount = neighborCount;
         this.id = id;
+        this.domain = domain;
+        this.locallyReducible = locallyReducible;
+        this.valueAssigned = valueAssigned;
     }
     
     public Node deepcopy() {
-        return new Node(parent, child, pseudoNeighbor, level, neighbors, neighborCount, id);
+        return new Node(parent, child, pseudoNeighbor, level, neighbors, neighborCount, id, domain, locallyReducible, valueAssigned);
     }
 
     void addNeighbor(Node node) {

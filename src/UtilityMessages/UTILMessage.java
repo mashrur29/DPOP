@@ -13,5 +13,12 @@ import java.util.List;
  * @author Asus
  */
 public class UTILMessage {
-    public List<Assignments> neighbors = new LinkedList<Assignments>();
+    public List<Assignments> assign = new LinkedList<Assignments>();
+    
+    public void update(int node, int val) {
+        for(Assignments temp: assign) {
+            temp.addAssignment(node, val);
+        }
+    }
+    
 }
