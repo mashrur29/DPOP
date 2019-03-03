@@ -87,7 +87,7 @@ public class Node extends Thread {
                     for (int i = 0; i < neighborCount; i++) {
                         Node tmp = neighbors.get(i).deepcopy();
                         if (tmp.id != id && tmp.id != layermsg.sender.id && !(childAdded.containsKey(new Integer(tmp.id)))) {
-                            System.out.println(id + " child banailam " + tmp.id);
+                            System.out.println(id + " making child " + tmp.id);
                             child.add(tmp);
                             childAdded.put(new Integer(tmp.id), new Integer(1));
                         }
@@ -108,7 +108,7 @@ public class Node extends Thread {
                 else {
                     int index = findChild(layermsg.sender.id);
                     if(index != -1) {
-                        System.out.println("lol" + child.get(index).id + " " + id);
+                        System.out.println("Child" + child.get(index).id + " " + id);
                         child.remove(index);
                         pseudoNeighbor.add(layermsg.sender.deepcopy());
                     }

@@ -69,15 +69,15 @@ public class BfsTree {
                     BfsTree.constraints[3][2][j][i] = 0;
                 }
                 else {
-                    BfsTree.constraints[2][3][i][j] = Constants.max_int;
-                    BfsTree.constraints[3][2][j][i] = Constants.max_int;
+                    BfsTree.constraints[2][3][i][j] = Constants.restricted;
+                    BfsTree.constraints[3][2][j][i] = Constants.restricted;
                 }
             }
         }
         
     }
 
-    public void construct() throws InterruptedException {
+    public void constructBfsTree() throws InterruptedException {
         simulation1();
         
         for(int i=1; i<=nodeCnt; i++) {

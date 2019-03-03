@@ -5,20 +5,44 @@
  */
 package UtilityMessages;
 
+import dpop.Constants;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
  * @author Asus
  */
 public class UTILMessage {
-    public List<Assignments> assign = new LinkedList<Assignments>();
-    
+
+    public Set<Assignments> assign = new HashSet<Assignments>();
+    public int receiverId = Constants.restricted;
+    public int done_[][] = new int[Constants.nodeCnt+1][Constants.nodeCnt+1];
+
     public void update(int node, int val) {
-        for(Assignments temp: assign) {
-            temp.addAssignment(node, val);
+        Set<Assignments> assignTemp = new HashSet<Assignments>();
+        
+        
+        for (Assignments temp : assign) {
+            if (temp.assignedValues[node] == Constants.restricted) {
+                temp.addAssignment(node, val);
+            } 
+            else {
+                Assignments tempNew = new Assignments();
+                tempNew.cost = temp.cost;
+                for (int i = 0; i < temp.assignedValues.length; i++) {
+                    tempNew.assignedValues[i] = temp.assignedValues[i];
+                }
+                tempNew.addAssignment(node, val);
+                assignTemp.add(tempNew);
+            }
+        }
+
+        for (Assignments addAssignment : assignTemp) {
+            assign.add(addAssignment);
         }
     }
-    
+
 }

@@ -25,14 +25,9 @@ public class DPOP {
      */
     public static void main(String[] args) throws InterruptedException {
         Instant start = Instant.now();
-        Assignments ass = new Assignments();
-        BfsTree sim = new BfsTree();
-        sim.construct();
-        nonDistributedClusterRemoving removeCluster = new nonDistributedClusterRemoving(sim.graph);
-        removeCluster.removeCluster();
         
-        BFSDPOP dpop = new BFSDPOP(sim.graph);
-        dpop.executeBfsDpop();
+        BFSDPOP bfsDpop = new BFSDPOP();
+        bfsDpop.executeBfsDpop();
         
         Instant finish = Instant.now();
         double timeElapsed = Duration.between(start, finish).toMillis();

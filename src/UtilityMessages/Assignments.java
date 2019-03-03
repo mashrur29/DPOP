@@ -37,7 +37,7 @@ public class Assignments {
         for (int i = 1; i <= Constants.nodeCnt; i++) {
             if (assignedValues[i] != Constants.restricted && i != node) {
                 if (BfsTree.constraints[node][i][val][assignedValues[i]] != Constants.restricted) {
-                    this.cost += BfsTree.constraints[node][i][val][assignedValues[i]];
+                    if(BfsTree.constraints[node][i][val][assignedValues[i]] != Constants.restricted) this.cost += BfsTree.constraints[node][i][val][assignedValues[i]];
                 }
             }
         }

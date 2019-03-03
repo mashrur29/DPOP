@@ -5,44 +5,100 @@
  */
 package dpop;
 
+import UtilityMessages.Assignments;
 import UtilityMessages.UTILMessage;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
  * @author Asus
  */
 public class UtilPropagationPhase {
+
     public Node graph[];
     int nodeCnt = Constants.nodeCnt;
-    public UTILMessage utilMessage = new UTILMessage();
+    public UTILMessage final_ = new UTILMessage();
+    public List<Node> leaf = new LinkedList<Node>();
+    public List<UTILMessage> messages = new LinkedList<UTILMessage>();
 
     public UtilPropagationPhase(Node[] graph) {
         this.graph = graph;
     }
-    
-    public UTILMessage recursiveHelper(int node) {
-        UTILMessage ret = null;
-        
-        if(graph[node].child.size() == 0) {
-            for(Integer temp: graph[node].domain) {
-                ret = new UTILMessage();
-                ret.update(node, Integer.valueOf((int) temp));
-            }
+
+    public void recursiveHelper(Set<Integer> leaf_set) {
+        boolean revised = false;
+        Set<Integer> leaf_set_temp = new HashSet<Integer>();
+
+        for (Integer nodeInt : leaf_set) {
+            int node = Integer.valueOf((int) nodeInt);
+            node = graph[node].parent.id;
+            leaf_set_temp.add(new Integer(node));
         }
-        
-        for(Node nod: graph[node].child) {
-           ret = recursiveHelper(nod.id);
-           for(Integer temp: graph[node].domain) {
-                ret = new UTILMessage();
-                ret.update(node, Integer.valueOf((int) temp));
+
+        for (Integer nodeInt : leaf_set_temp) {
+            int node = Integer.valueOf((int) nodeInt);
+            if (node != 1) {
+                revised = true;
             }
+
+            for (Integer temp : graph[node].domain) {
+                //System.out.println("node: " + node + " val: " + Integer.valueOf((int) temp));
+                final_.update(node, Integer.valueOf((int) temp));
+            }
+
         }
-        
-        return ret;
+
+        if (!revised) {
+            return;
+        } else {
+            recursiveHelper(leaf_set_temp);
+            return;
+        }
+
     }
-    
+
     public void executeUtilPropagation() {
-        utilMessage = recursiveHelper(Constants.root);
+        Set<Integer> leaf_set = new HashSet<Integer>();
+
+        for (int i = 1; i <= Constants.nodeCnt; i++) {
+            if (graph[i].child.size() == 0) {
+                leaf_set.add(new Integer(i));
+            }
+        }
+
+        boolean firstAssignment = true;
+
+        for (Integer nodeInt : leaf_set) {
+            int node = Integer.valueOf((int) nodeInt);
+
+            for (Integer temp : graph[node].domain) {
+                int val = Integer.valueOf((int) temp);
+                Assignments newAss = new Assignments();
+                newAss.assignedValues[node] = val;
+                
+                if (firstAssignment) {
+                    final_.assign.add(newAss);
+                } else {
+                    final_.update(node, val);
+                }
+            }
+            firstAssignment = false;
+        }
+
+//        System.out.println("-----------------------------");
+//        for (Assignments temp : final_.assign) {
+//            System.out.println("Cost: " + temp.cost);
+//            for (int i = 1; i <= Constants.nodeCnt; i++) {
+//                System.out.println(i + " : " + temp.assignedValues[i]);
+//            }
+//        }
+//
+//        System.out.println("-------------------------");
+
+        recursiveHelper(leaf_set);
     }
 
 }

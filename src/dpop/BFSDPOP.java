@@ -7,6 +7,7 @@ package dpop;
 
 import UtilityMessages.Assignments;
 import UtilityMessages.UTILMessage;
+import clusterRemoving.nonDistributedClusterRemoving;
 import com.sun.org.apache.bcel.internal.classfile.Constant;
 
 /**
@@ -14,25 +15,56 @@ import com.sun.org.apache.bcel.internal.classfile.Constant;
  * @author Asus
  */
 public class BFSDPOP {
+
     public Node graph[];
 
+    public BFSDPOP() {
+    }
+    
     public BFSDPOP(Node[] graph) {
         this.graph = graph;
     }
-    
-    public void executeBfsDpop() {
+
+    public void executeBfsDpop() throws InterruptedException {
+        BfsTree sim = new BfsTree();
+        sim.constructBfsTree();
+        nonDistributedClusterRemoving removeCluster = new nonDistributedClusterRemoving(sim.graph);
+        removeCluster.removeCluster();
+        graph = sim.graph;
+        
+        System.out.println("");
+        System.out.println("Util Propagation Starting");
+        
+        
         UtilPropagationPhase utilphase = new UtilPropagationPhase(graph);
         utilphase.executeUtilPropagation();
         
         System.out.println("Util Propagation Phase Complete ");
-        System.out.println("The message constains");
-        for(Assignments temp: utilphase.utilMessage.assign) {
-            System.out.println("Cost: " + temp.cost);
-            for(int i=1; i<=Constants.nodeCnt; i++) {
-                System.out.println(i + " : " + temp.assignedValues[i]);
+   
+        int assignmentCnt = 0;
+        int minCost = Constants.max_int;
+        Assignments optimalAssignment = null;
+
+        for (Assignments temp : utilphase.final_.assign) {
+            assignmentCnt++;
+            
+            if (temp.cost < minCost) {
+                minCost = temp.cost;
+                optimalAssignment = temp;
             }
+
+        }
+        
+        
+        valuePropagationPhase valuePropagate = new valuePropagationPhase(graph, optimalAssignment);
+        
+        System.out.println("Value Propagation Complete");
+        System.out.println("Optimal Assignment:");
+        System.out.println("Cost: " + optimalAssignment.cost);
+        for(int i=1; i<= Constants.nodeCnt; i++) {
+            System.out.println(i + " : " + optimalAssignment.assignedValues[i]);
         }
         
     }
-    
+
 }
