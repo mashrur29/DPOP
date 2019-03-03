@@ -88,15 +88,15 @@ public class UtilPropagationPhase {
             firstAssignment = false;
         }
 
-//        System.out.println("-----------------------------");
-//        for (Assignments temp : final_.assign) {
-//            System.out.println("Cost: " + temp.cost);
-//            for (int i = 1; i <= Constants.nodeCnt; i++) {
-//                System.out.println(i + " : " + temp.assignedValues[i]);
-//            }
-//        }
-//
-//        System.out.println("-------------------------");
+        System.out.println("-----------------------------");
+        for (Assignments temp : final_.assign) {
+            System.out.println("Cost: " + temp.cost);
+            for (int i = 1; i <= Constants.nodeCnt; i++) {
+                System.out.println(i + " : " + temp.assignedValues[i]);
+            }
+        }
+
+        System.out.println("-------------------------");
 
         recursiveHelper(leaf_set);
     }

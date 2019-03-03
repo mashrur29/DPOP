@@ -9,6 +9,8 @@ import UtilityMessages.Assignments;
 import UtilityMessages.UTILMessage;
 import clusterRemoving.nonDistributedClusterRemoving;
 import com.sun.org.apache.bcel.internal.classfile.Constant;
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  *
@@ -17,6 +19,7 @@ import com.sun.org.apache.bcel.internal.classfile.Constant;
 public class BFSDPOP {
 
     public Node graph[];
+    public double timElapsed;
 
     public BFSDPOP() {
     }
@@ -32,6 +35,7 @@ public class BFSDPOP {
         removeCluster.removeCluster();
         graph = sim.graph;
         
+        Instant start = Instant.now();
         System.out.println("");
         System.out.println("Util Propagation Starting");
         
@@ -64,6 +68,9 @@ public class BFSDPOP {
         for(int i=1; i<= Constants.nodeCnt; i++) {
             System.out.println(i + " : " + optimalAssignment.assignedValues[i]);
         }
+        
+        Instant finish = Instant.now();
+        timElapsed = Duration.between(start, finish).toMillis();
         
     }
 
