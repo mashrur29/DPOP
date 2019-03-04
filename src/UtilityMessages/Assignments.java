@@ -5,6 +5,7 @@
  */
 package UtilityMessages;
 
+import Satisfiability.Constraints;
 import dpop.BfsTree;
 import dpop.Constants;
 import dpop.Node;
@@ -37,9 +38,9 @@ public class Assignments {
         for (int i = 1; i <= Constants.nodeCnt; i++) {
             if (assignedValues[i] != Constants.restricted && i != node) {
                 
-                if (BfsTree.constraints[node][i][val][assignedValues[i]] != Constants.restricted) {
-                    if(BfsTree.constraints[node][i][val][assignedValues[i]] != Constants.restricted) 
-                        this.cost += BfsTree.constraints[node][i][val][assignedValues[i]];
+                if (Constraints.constraints[node][i][val][assignedValues[i]] != Constants.restricted) {
+                    if(Constraints.constraints[node][i][val][assignedValues[i]] != Constants.restricted) 
+                        this.cost += Constraints.constraints[node][i][val][assignedValues[i]];
                 }
             }
         }

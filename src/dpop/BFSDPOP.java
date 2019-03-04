@@ -9,6 +9,7 @@ import UtilityMessages.Assignments;
 import UtilityMessages.UTILMessage;
 import clusterRemoving.nonDistributedClusterRemoving;
 import com.sun.org.apache.bcel.internal.classfile.Constant;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -28,7 +29,7 @@ public class BFSDPOP {
         this.graph = graph;
     }
 
-    public void executeBfsDpop() throws InterruptedException {
+    public void executeBfsDpop() throws InterruptedException, IOException {
         BfsTree sim = new BfsTree();
         sim.constructBfsTree();
         nonDistributedClusterRemoving removeCluster = new nonDistributedClusterRemoving(sim.graph);

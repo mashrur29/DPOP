@@ -6,119 +6,208 @@
 package dpop;
 
 import PseudoTreeConstruction.LayerMessage;
+import Satisfiability.Constraints;
+import com.sun.corba.se.impl.orbutil.closure.Constant;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  *
  * @author Asus
  */
 public class BfsTree {
+
     public int root = 1, nodeCnt = Constants.nodeCnt;
-    public Node graph[] = new Node[Constants.nodeCnt+1];
+    public int edgeCnt = 3;
+    public Node graph[] = new Node[Constants.nodeCnt + 1];
     Node node1 = new Node(1);
     Node node2 = new Node(2);
     Node node3 = new Node(3);
-    public static int constraints[][][][] = new int[Constants.maxAgents][Constants.maxAgents][Constants.maxAgents][Constants.maxAgents];
-    
+
     void simulation1() {
         nodeCnt = Constants.nodeCnt;
         root = Constants.root;
-        
-        for(int i=1; i<=nodeCnt; i++) {    // 1--2
+
+        for (int i = 1; i <= nodeCnt; i++) {    // 1--2
             graph[i] = new Node(i);        // | /   
         }                                  // 3
-        
+
         graph[1].domain.add(new Integer(1));
         graph[1].domain.add(new Integer(2));
         graph[1].domain.add(new Integer(3));
-        
+
         graph[2].domain.add(new Integer(1));
         graph[2].domain.add(new Integer(2));
         graph[2].domain.add(new Integer(3));
-        
+
         graph[3].domain.add(new Integer(1));
         graph[3].domain.add(new Integer(2));
         graph[3].domain.add(new Integer(3));
-        
+
         graph[1].addNeighbor(graph[2].deepcopy());
         graph[1].addNeighbor(graph[3].deepcopy());
-        
+
         graph[2].addNeighbor(graph[1].deepcopy());
         graph[2].addNeighbor(graph[3].deepcopy());
-        
+
         graph[3].addNeighbor(graph[1].deepcopy());
         graph[3].addNeighbor(graph[2].deepcopy());
-        
-        for(int i=Constants.domainStart; i<=Constants.domainEnd; i++) {
-            for(int j=Constants.domainStart; j<=Constants.domainEnd; j++) {
-                BfsTree.constraints[1][2][i][j] = 2;
-                BfsTree.constraints[2][1][j][i] = 2;
+
+        for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                Constraints.constraints[1][2][i][j] = 2;
+                Constraints.constraints[2][1][j][i] = 2;
+            }
+        }
+
+        for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                Constraints.constraints[1][3][i][j] = 3;
+                Constraints.constraints[3][1][j][i] = 3;
+            }
+        }
+
+        for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) { // Hard Constraint
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                if (i < j) {
+                    Constraints.constraints[2][3][i][j] = 0;
+                    Constraints.constraints[3][2][j][i] = 0;
+                } else {
+                    Constraints.constraints[2][3][i][j] = Constants.restricted;
+                    Constraints.constraints[3][2][j][i] = Constants.restricted;
+                }
+            }
+        }
+
+    }
+
+    public void generateSimulation() throws FileNotFoundException, IOException {
+        FileInputStream fstream = new FileInputStream("inputGraph.txt");
+        BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+        String strLine;
+        strLine = br.readLine();
+        String[] stringArrayTemp = strLine.split("\\s+");
+
+        nodeCnt = Constants.nodeCnt = Integer.parseInt(stringArrayTemp[0]);;
+        edgeCnt = Integer.parseInt(stringArrayTemp[1]);
+        root = Constants.root = Integer.parseInt(stringArrayTemp[2]);
+
+        strLine = br.readLine();
+        stringArrayTemp = strLine.split("\\s+");
+
+        Constants.domainStart = Integer.parseInt(stringArrayTemp[0]);
+        Constants.domainEnd = Integer.parseInt(stringArrayTemp[1]);
+
+        for (int i = 1; i <= nodeCnt; i++) {
+            graph[i] = new Node(i);
+        }
+
+        for (int i = 1; i <= nodeCnt; i++) {
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                graph[i].domain.add(new Integer(j));
             }
         }
         
-        for(int i=Constants.domainStart; i<=Constants.domainEnd; i++) {
-            for(int j=Constants.domainStart; j<=Constants.domainEnd; j++) {
-                BfsTree.constraints[1][3][i][j] = 3;
-                BfsTree.constraints[3][1][j][i] = 3;
-            }
-        }
-        
-        for(int i=Constants.domainStart; i<=Constants.domainEnd; i++) { // Hard Constraint
-            for(int j=Constants.domainStart; j<=Constants.domainEnd; j++) {
-                if(i < j) {
-                    BfsTree.constraints[2][3][i][j] = 0;
-                    BfsTree.constraints[3][2][j][i] = 0;
+        //System.out.println("nodeCnt " + nodeCnt + " domainStart " + Constants.domainStart + " domainEnd " + Constants.domainEnd + " root " + Constants.root + " edgeCnt " + edgeCnt);
+
+        while ((strLine = br.readLine()) != null) {
+            //strLine = strLine.replaceAll("\\s+", "");
+            
+            String[] stringArray = strLine.split("\\s+");
+            
+            int u = Integer.parseInt(stringArray[0].trim());
+            int v = Integer.parseInt(stringArray[1].trim());
+            int type = Integer.parseInt(stringArray[2].trim());
+            int cost = 0;
+            
+            
+            graph[u].addNeighbor(graph[v].deepcopy());
+            graph[v].addNeighbor(graph[u].deepcopy());
+
+            if (type == 0) { // Hard Constraint
+                for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
+                    strLine = br.readLine();
+                    String[] stringArrayDomain = strLine.split("\\s+");
+
+                    for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                        cost = Integer.parseInt(stringArrayDomain[j - 1]);
+                        if (Constraints.satisfies(i, j, cost)) {
+                            Constraints.constraints[u][v][i][j] = 0;
+                            Constraints.constraints[v][u][j][i] = Constants.max_int;
+                        } else {
+                            Constraints.constraints[u][v][i][j] = Constants.max_int;
+                            Constraints.constraints[v][u][j][i] = 0;
+                        }
+                    }
                 }
-                else {
-                    BfsTree.constraints[2][3][i][j] = Constants.restricted;
-                    BfsTree.constraints[3][2][j][i] = Constants.restricted;
+            } else { // Soft Constraint
+                for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
+                    strLine = br.readLine();
+                    String[] stringArrayDomain = strLine.split("\\s+");
+
+                    for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                        cost = Integer.parseInt(stringArrayDomain[j - 1]);
+                        Constraints.constraints[u][v][i][j] = cost;
+                        Constraints.constraints[v][u][j][i] = cost;
+                    }
                 }
             }
+            
+
         }
         
     }
 
-    public void constructBfsTree() throws InterruptedException {
-        simulation1();
-        
-        for(int i=1; i<=nodeCnt; i++) {
+    public void constructBfsTree() throws InterruptedException, IOException {
+        //simulation1();
+        generateSimulation();
+
+        for (int i = 1; i <= nodeCnt; i++) {
             if (i == root) {
                 graph[i].level = 0;
-                for(Node node: graph[i].neighbors) {
+                for (Node node : graph[i].neighbors) {
                     graph[i].child.add(node);
                 }
-                for(Node node: graph[i].child) {
+                for (Node node : graph[i].child) {
                     System.out.println(node.id);
                     DPOP.msg.addLayerMessage(node.id, new LayerMessage(graph[i]));
                 }
             }
         }
-        
-        for(int i=1; i<=nodeCnt; i++) {
+
+        for (int i = 1; i <= nodeCnt; i++) {
             graph[i].start();
         }
-        
-        for(int i=1; i<=nodeCnt; i++) {
+
+        for (int i = 1; i <= nodeCnt; i++) {
             graph[i].join();
         }
-        
+
         System.out.println("Pseudo Tree Construction Complete");
         System.out.println("");
         System.out.println("The Generated Graph is:");
-        
-        for(int i=1; i<=nodeCnt; i++) {
+
+        for (int i = 1; i <= nodeCnt; i++) {
             System.out.print("Node " + i + " child: ");
-            if(graph[i].child.size() == 0) System.out.print("No Child");
-            else {
-                for(Node node: graph[i].child) {
+            if (graph[i].child.size() == 0) {
+                System.out.print("No Child");
+            } else {
+                for (Node node : graph[i].child) {
                     System.out.print(node.id + " ");
                 }
             }
-            if(graph[i].parent != null) System.out.print(" , Parent: " + graph[i].parent.id);
-            else System.out.print(" , It is root");
+            if (graph[i].parent != null) {
+                System.out.print(" , Parent: " + graph[i].parent.id);
+            } else {
+                System.out.print(" , It is root");
+            }
             System.out.println("");
         }
         System.out.println("");
 
-        
     }
 }

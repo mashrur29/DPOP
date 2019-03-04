@@ -33,7 +33,7 @@ public class DPOP {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
 
         DFSDPOP dfsdpop = new DFSDPOP();
         dfsdpop.executeDfsDpop();
@@ -44,7 +44,7 @@ public class DPOP {
         System.out.println("Execution Time for DFS DPOP: " + dfsdpop.timElapsed + "ms");
         System.out.println("Execution Time for BFS DPOP: " + bfsDpop.timElapsed + "ms");
 
-        //ExecutePython.callPythonScript();
+        ExecutePython.callPythonScript();
 
     }
 

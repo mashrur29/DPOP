@@ -6,6 +6,7 @@
 package dpop;
 
 import UtilityMessages.Assignments;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -29,7 +30,7 @@ public class DFSDPOP {
         this.graph = graph;
     }
 
-    public void executeDfsDpop() throws InterruptedException {
+    public void executeDfsDpop() throws InterruptedException, IOException {
         DfsTree sim = new DfsTree();
         sim.constructDfsTree();
         this.setGraph(sim.graph);
