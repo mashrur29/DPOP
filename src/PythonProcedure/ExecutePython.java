@@ -10,6 +10,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import org.python.util.PythonInterpreter;
 
 /**
  *
@@ -17,12 +18,14 @@ import java.io.InputStreamReader;
  */
 public class ExecutePython {
 
-    public static void callPythonScript() {
+    public static void callPythonScript() throws IOException {
         try {
-            String pathFile = "/home/mashrur/Dropbox/Thesis/DPOP/DPOP/src/PythonProcedure/run.py";
-            Process p = Runtime.getRuntime().exec("python " + pathFile);
-        } catch (IOException e) {
+            Process p = Runtime.getRuntime().exec("python run.py");
+            System.out.println("done");
+        } catch (Exception e) {
+            System.out.println("Exception");
         }
+        
     }
 
 }

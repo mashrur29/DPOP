@@ -27,25 +27,27 @@ import java.util.List;
  * @author Asus
  */
 public class DPOP {
-
+    
     public static Messages msg = new Messages();
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, IOException {
-
-        DFSDPOP dfsdpop = new DFSDPOP();
-        dfsdpop.executeDfsDpop();
-
+        //ExecutePython.callPythonScript();
+        
+        //DFSDPOP dfsdpop = new DFSDPOP();
+        //dfsdpop.executeDfsDpop();
+        
         BFSDPOP bfsDpop = new BFSDPOP();
         bfsDpop.executeBfsDpop();
-
-        System.out.println("Execution Time for DFS DPOP: " + dfsdpop.timElapsed + "ms");
+        
+        //System.out.println("Execution Time for DFS DPOP: " + dfsdpop.timElapsed + "ms");
         System.out.println("Execution Time for BFS DPOP: " + bfsDpop.timElapsed + "ms");
-
-        ExecutePython.callPythonScript();
-
+        
+        //String str = String.valueOf(Constants.nodeCnt) + ", " + String.valueOf(dfsdpop.timElapsed) + ", " + String.valueOf(bfsDpop.timElapsed) + "\n";
+        String fileName = "timeOutput.csv";
+        //FileIO.FileAppend.appendStrToFile(fileName, str);
     }
-
+    
 }

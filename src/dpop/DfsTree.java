@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 /**
  *
@@ -19,15 +20,16 @@ import java.io.InputStreamReader;
  */
 public class DfsTree {
 
-    public int visited[] = new int[Constants.nodeCnt + 1];
+    public int visited[];
     public int root = 1, nodeCnt = Constants.nodeCnt;
-    public Node graph[] = new Node[Constants.nodeCnt + 1];
+    public Node graph[];
     Node node1 = new Node(1);
     Node node2 = new Node(2);
     Node node3 = new Node(3);
-    
 
     void simulation1() {
+        graph = new Node[Constants.nodeCnt + 1];
+        visited = new int[Constants.nodeCnt + 1];
         nodeCnt = Constants.nodeCnt;
         root = Constants.root;
 
@@ -83,9 +85,9 @@ public class DfsTree {
         }
 
     }
-    
+
     public void generateSimulation() throws FileNotFoundException, IOException {
-        FileInputStream fstream = new FileInputStream("inputGraph.txt");
+        FileInputStream fstream = new FileInputStream("inputRandomGraph.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
         String strLine;
@@ -102,6 +104,9 @@ public class DfsTree {
         Constants.domainStart = Integer.parseInt(stringArrayTemp[0]);
         Constants.domainEnd = Integer.parseInt(stringArrayTemp[1]);
 
+        graph = new Node[Constants.nodeCnt + 1];
+        visited = new int[Constants.nodeCnt + 1];
+
         for (int i = 1; i <= nodeCnt; i++) {
             graph[i] = new Node(i);
         }
@@ -111,20 +116,18 @@ public class DfsTree {
                 graph[i].domain.add(new Integer(j));
             }
         }
-        
-        //System.out.println("nodeCnt " + nodeCnt + " domainStart " + Constants.domainStart + " domainEnd " + Constants.domainEnd + " root " + Constants.root + " edgeCnt " + edgeCnt);
 
+        //System.out.println("nodeCnt " + nodeCnt + " domainStart " + Constants.domainStart + " domainEnd " + Constants.domainEnd + " root " + Constants.root + " edgeCnt " + edgeCnt);
         while ((strLine = br.readLine()) != null) {
             //strLine = strLine.replaceAll("\\s+", "");
-            
+
             String[] stringArray = strLine.split("\\s+");
-            
+
             int u = Integer.parseInt(stringArray[0].trim());
             int v = Integer.parseInt(stringArray[1].trim());
             int type = Integer.parseInt(stringArray[2].trim());
             int cost = 0;
-            
-            
+
             graph[u].addNeighbor(graph[v].deepcopy());
             graph[v].addNeighbor(graph[u].deepcopy());
 
@@ -156,18 +159,16 @@ public class DfsTree {
                     }
                 }
             }
-            
 
         }
-        
+
     }
 
     public void recursiveDfs(int node, Node par) {
         if (par != null) {
             graph[node].parent = par.deepcopy();
             graph[par.id].child.add(graph[node].deepcopy());
-        }
-        else {
+        } else {
             graph[node].parent = null;
         }
         visited[node] = 1;
@@ -181,11 +182,14 @@ public class DfsTree {
     }
 
     public void constructDfsTree() throws InterruptedException, IOException {
+
+        Constraints.initArray();
+
         //simulation1();
         generateSimulation();
-        
         recursiveDfs(Constants.root, null);
-
+        fixPseudoNeighbor();
+        
         System.out.println("Pseudo Tree Construction Complete");
         System.out.println("");
         System.out.println("The Generated Graph is:");
@@ -208,5 +212,29 @@ public class DfsTree {
         }
         System.out.println("");
 
+    }
+
+    private void fixPseudoNeighbor() {
+        for (int i = 1; i <= Constants.nodeCnt; i++) {
+            for (Node nod : graph[i].neighbors) {
+                //System.out.println("neighbor: " + i + " " + nod.id);
+                boolean ok1 = true, ok2 = true;
+                if (graph[i].parent != null && graph[i].parent.id == nod.id) {
+                    ok1 = false;
+                }
+                if (graph[i].child != null) {
+                    for (Node nod1 : graph[i].child) {
+                        if (nod1.id == nod.id) {
+                            ok2 = false;
+                            break;
+                        }
+                    }
+                }
+                if (ok1 && ok2) {
+                    graph[i].pseudoNeighbor.add(nod);
+                }
+            }
+            graph[i].pseudoNeighborSize = graph[i].pseudoNeighbor.size();
+        }
     }
 }

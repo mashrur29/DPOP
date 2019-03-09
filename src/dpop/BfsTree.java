@@ -13,6 +13,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  *
@@ -22,7 +26,7 @@ public class BfsTree {
 
     public int root = 1, nodeCnt = Constants.nodeCnt;
     public int edgeCnt = 3;
-    public Node graph[] = new Node[Constants.nodeCnt + 1];
+    public Node graph[];
     Node node1 = new Node(1);
     Node node2 = new Node(2);
     Node node3 = new Node(3);
@@ -30,6 +34,7 @@ public class BfsTree {
     void simulation1() {
         nodeCnt = Constants.nodeCnt;
         root = Constants.root;
+        graph = new Node[Constants.nodeCnt + 1];
 
         for (int i = 1; i <= nodeCnt; i++) {    // 1--2
             graph[i] = new Node(i);        // | /   
@@ -84,8 +89,42 @@ public class BfsTree {
 
     }
 
+    public void constructBfs() {
+        int visited[] = new int[Constants.nodeCnt + 1];
+        Arrays.fill(visited, 0);
+        Queue<Integer> q = new LinkedList<>();
+        q.add(Constants.root);
+        visited[Constants.root] = 1;
+        graph[Constants.root].parent = null;
+        int previousNode = Constants.root;
+
+        while (!q.isEmpty()) {
+            int curNode = q.remove();
+            visited[curNode] = 1;
+
+            for (Node node : graph[curNode].neighbors) {
+                if (visited[node.id] == 0) {
+                    graph[curNode].child.add(node.deepcopy());
+                }
+            }
+
+            for (Node node : graph[curNode].neighbors) {
+                if (visited[node.id] == 0) {
+                    //graph[curNode].child.add(node.deepcopy());
+                    graph[node.id].parent = graph[curNode].deepcopy();
+                    q.add(node.id);
+                    visited[node.id] = 1;
+                }
+            }
+
+        }
+
+        graph[Constants.root].parent = null;
+
+    }
+
     public void generateSimulation() throws FileNotFoundException, IOException {
-        FileInputStream fstream = new FileInputStream("inputGraph.txt");
+        FileInputStream fstream = new FileInputStream("inputRandomGraph.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
         String strLine;
@@ -102,6 +141,8 @@ public class BfsTree {
         Constants.domainStart = Integer.parseInt(stringArrayTemp[0]);
         Constants.domainEnd = Integer.parseInt(stringArrayTemp[1]);
 
+        graph = new Node[Constants.nodeCnt + 1];
+
         for (int i = 1; i <= nodeCnt; i++) {
             graph[i] = new Node(i);
         }
@@ -111,20 +152,18 @@ public class BfsTree {
                 graph[i].domain.add(new Integer(j));
             }
         }
-        
-        //System.out.println("nodeCnt " + nodeCnt + " domainStart " + Constants.domainStart + " domainEnd " + Constants.domainEnd + " root " + Constants.root + " edgeCnt " + edgeCnt);
 
+        //System.out.println("nodeCnt " + nodeCnt + " domainStart " + Constants.domainStart + " domainEnd " + Constants.domainEnd + " root " + Constants.root + " edgeCnt " + edgeCnt);
         while ((strLine = br.readLine()) != null) {
             //strLine = strLine.replaceAll("\\s+", "");
-            
+
             String[] stringArray = strLine.split("\\s+");
-            
+
             int u = Integer.parseInt(stringArray[0].trim());
             int v = Integer.parseInt(stringArray[1].trim());
             int type = Integer.parseInt(stringArray[2].trim());
             int cost = 0;
-            
-            
+
             graph[u].addNeighbor(graph[v].deepcopy());
             graph[v].addNeighbor(graph[u].deepcopy());
 
@@ -156,38 +195,41 @@ public class BfsTree {
                     }
                 }
             }
-            
 
         }
-        
+
     }
 
     public void constructBfsTree() throws InterruptedException, IOException {
+        Constraints.initArray();
         //simulation1();
+
         generateSimulation();
-
-        for (int i = 1; i <= nodeCnt; i++) {
-            if (i == root) {
-                graph[i].level = 0;
-                for (Node node : graph[i].neighbors) {
-                    graph[i].child.add(node);
-                }
-                for (Node node : graph[i].child) {
-                    System.out.println(node.id);
-                    DPOP.msg.addLayerMessage(node.id, new LayerMessage(graph[i]));
-                }
-            }
-        }
-
-        for (int i = 1; i <= nodeCnt; i++) {
-            graph[i].start();
-        }
-
-        for (int i = 1; i <= nodeCnt; i++) {
-            graph[i].join();
-        }
-
-        System.out.println("Pseudo Tree Construction Complete");
+        constructBfs();
+        fixPseudoNeighbor();
+        
+        
+//        for (int i = 1; i <= nodeCnt; i++) {
+//            if (i == root) {
+//                graph[i].level = 0;
+//                for (Node node : graph[i].neighbors) {
+//                    graph[i].child.add(node);
+//                }
+//                for (Node node : graph[i].child) {
+//                    System.out.println(node.id);
+//                    DPOP.msg.addLayerMessage(node.id, new LayerMessage(graph[i]));
+//                }
+//            }
+//        }
+//
+//        for (int i = 1; i <= nodeCnt; i++) {
+//            graph[i].start();
+//        }
+//
+//        for (int i = 1; i <= nodeCnt; i++) {
+//            graph[i].join();
+//        }
+        System.out.println("Bfs Pseudo Tree Construction Complete");
         System.out.println("");
         System.out.println("The Generated Graph is:");
 
@@ -209,5 +251,29 @@ public class BfsTree {
         }
         System.out.println("");
 
+    }
+
+    private void fixPseudoNeighbor() {
+        for (int i = 1; i <= Constants.nodeCnt; i++) {
+            for (Node nod : graph[i].neighbors) {
+                //System.out.println("neighbor: " + i + " " + nod.id);
+                boolean ok1 = true, ok2 = true;
+                if (graph[i].parent != null && graph[i].parent.id == nod.id) {
+                    ok1 = false;
+                }
+                if (graph[i].child != null) {
+                    for (Node nod1 : graph[i].child) {
+                        if (nod1.id == nod.id) {
+                            ok2 = false;
+                            break;
+                        }
+                    }
+                }
+                if (ok1 && ok2) {
+                    graph[i].pseudoNeighbor.add(nod);
+                }
+            }
+            graph[i].pseudoNeighborSize = graph[i].pseudoNeighbor.size();
+        }
     }
 }

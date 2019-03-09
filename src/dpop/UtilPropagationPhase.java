@@ -31,12 +31,25 @@ public class UtilPropagationPhase {
     public void recursiveHelper(Set<Integer> leaf_set) {
         boolean revised = false;
         Set<Integer> leaf_set_temp = new HashSet<Integer>();
-
+        
+        System.out.println("Current leaf set status");
+        for(Integer nodeInt : leaf_set) {
+            int node = Integer.valueOf((int) nodeInt);
+            System.out.print(node + " ");
+        }
+        System.out.println("");
+        
         for (Integer nodeInt : leaf_set) {
             int node = Integer.valueOf((int) nodeInt);
+            
+            if(node == Constants.root) {
+                continue;
+            }
+            System.out.println("lol " + node);
             node = graph[node].parent.id;
             leaf_set_temp.add(new Integer(node));
         }
+        
 
         for (Integer nodeInt : leaf_set_temp) {
             int node = Integer.valueOf((int) nodeInt);
@@ -45,11 +58,13 @@ public class UtilPropagationPhase {
             }
 
             for (Integer temp : graph[node].domain) {
-                //System.out.println("node: " + node + " val: " + Integer.valueOf((int) temp));
+                System.out.println("node: " + node + " val: " + Integer.valueOf((int) temp));
                 final_.update(node, Integer.valueOf((int) temp));
             }
 
         }
+        
+        System.out.println("done");
 
         if (!revised) {
             return;

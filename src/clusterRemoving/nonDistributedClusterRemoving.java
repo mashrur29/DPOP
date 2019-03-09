@@ -36,15 +36,15 @@ public class nonDistributedClusterRemoving {
 
     public Pair<Integer, Integer> removeClusterHelper(int node) {
         Pair ret;
-        int maxSiz = graph[node].pseudoNeighbor.size(), maxId = node;
+        int maxSiz = graph[node].pseudoNeighborSize, maxId = node;
 
         if (graph[node].child.size() == 0) {
-            return (new Pair(new Integer(node), new Integer(graph[node].pseudoNeighbor.size())));
+            return (new Pair(new Integer(node), new Integer(graph[node].pseudoNeighborSize)));
         }
 
         for (Node nod : graph[node].child) {
             int id = nod.id;
-            int clusterSize = nod.pseudoNeighbor.size();
+            int clusterSize = nod.pseudoNeighborSize;
 
             if (maxSiz < clusterSize) {
                 maxSiz = clusterSize;
@@ -69,13 +69,13 @@ public class nonDistributedClusterRemoving {
                  //graph[otherId].child.add(graph[node].deepcopy());
                  //graph[node].parent = nod.deepcopy();
                  for(Node nod1: graph[otherId].pseudoNeighbor) {
-                     if(nod1.id == maxId) {
-                         graph[otherId].pseudoNeighbor.remove(nod1);
+                     if(nod1.id == maxId && graph[otherId].pseudoNeighborSize>0) {
+                         graph[otherId].pseudoNeighborSize--;
                          break;
                      }
                  }
             }
-            graph[node].pseudoNeighbor.clear();
+            graph[node].pseudoNeighborSize = 0;
         }
 
         for (Node nod : graph[node].child) {

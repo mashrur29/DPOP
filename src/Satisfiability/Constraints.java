@@ -6,6 +6,7 @@
 package Satisfiability;
 
 import dpop.Constants;
+import java.util.Arrays;
 
 /**
  *
@@ -14,7 +15,17 @@ import dpop.Constants;
 public class Constraints {
 
     public static int constraints[][][][] = new int[Constants.maxAgents][Constants.maxAgents][Constants.maxAgents][Constants.maxAgents];
-
+    
+    public static void initArray() {
+        for (int[][][] row : Constraints.constraints) {
+            for (int[][] rowColumn : row) {
+                for (int[] rowCol : rowColumn) {
+                    Arrays.fill(rowCol, Constants.max_int);
+                }
+            }
+        }
+    }
+    
     public static boolean satisfies(int u, int v, int type) {
         if (type == 1) {
             return u <= v;

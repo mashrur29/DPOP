@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.python.bouncycastle.util.Arrays;
 
 /**
  *
@@ -30,12 +31,16 @@ public class Node extends Thread {
     public List<Integer> domain = new LinkedList<Integer>();
     public boolean locallyReducible = true;
     public int valueAssigned = Constants.restricted;
+    public int receivedUtils[];
+    public int pseudoNeighborSize;
 
     public Node(int id) {
         parent = null;
         level = Constants.max_int;
         neighborCount = 0;
         this.id = id;
+        receivedUtils = new int[Constants.domainEnd+1];
+        Arrays.fill(receivedUtils, 0);
     }
 
     public Node(Node parent, List child, List pseudoNeighbor, int level, List neighbors, int neighborCount, int id, List<Integer> domain, boolean locallyReducible, int valueAssigned) {
