@@ -21,6 +21,7 @@ public class BFSDPOP {
 
     public Node graph[];
     public double timElapsed;
+    
 
     public BFSDPOP() {
     }
@@ -45,7 +46,12 @@ public class BFSDPOP {
         utilphase.executeUtilPropagation();
         
         System.out.println("Util Propagation Phase Complete ");
-   
+        
+        for(int i=Constants.domainStart; i<=Constants.domainEnd; i++) {
+            System.out.print(graph[Constants.root].receivedUtils[i] + " ");
+        }
+        System.out.println("");
+        
         int assignmentCnt = 0;
         int minCost = Constants.max_int;
         Assignments optimalAssignment = null;
@@ -64,12 +70,12 @@ public class BFSDPOP {
         valuePropagationPhase valuePropagate = new valuePropagationPhase(graph, optimalAssignment);
         
         System.out.println("Value Propagation Complete");
-        System.out.println("Optimal Assignment:");
-        System.out.println("Cost: " + optimalAssignment.cost);
-        for(int i=1; i<= Constants.nodeCnt; i++) {
-            System.out.println(i + " : " + optimalAssignment.assignedValues[i]);
-        }
-        
+//        System.out.println("Optimal Assignment:");
+//        System.out.println("Cost: " + optimalAssignment.cost);
+//        for(int i=1; i<= Constants.nodeCnt; i++) {
+//            System.out.println(i + " : " + optimalAssignment.assignedValues[i]);
+//        }
+//        
         Instant finish = Instant.now();
         timElapsed = Duration.between(start, finish).toMillis();
         

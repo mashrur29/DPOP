@@ -132,6 +132,7 @@ public class BfsTree {
         String[] stringArrayTemp = strLine.split("\\s+");
 
         nodeCnt = Constants.nodeCnt = Integer.parseInt(stringArrayTemp[0]);;
+        Constants.maxAgents = nodeCnt;
         edgeCnt = Integer.parseInt(stringArrayTemp[1]);
         root = Constants.root = Integer.parseInt(stringArrayTemp[2]);
 
@@ -166,7 +167,8 @@ public class BfsTree {
 
             graph[u].addNeighbor(graph[v].deepcopy());
             graph[v].addNeighbor(graph[u].deepcopy());
-
+            
+            
             if (type == 0) { // Hard Constraint
                 for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
                     strLine = br.readLine();
@@ -174,6 +176,7 @@ public class BfsTree {
 
                     for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
                         cost = Integer.parseInt(stringArrayDomain[j - 1]);
+                        Constraints.isHard[u][v] = Constraints.isHard[v][u] = cost;
                         if (Constraints.satisfies(i, j, cost)) {
                             Constraints.constraints[u][v][i][j] = 0;
                             Constraints.constraints[v][u][j][i] = Constants.max_int;

@@ -25,6 +25,11 @@ import java.util.List;
 /**
  *
  * @author Asus
+ * Mashrur Rashik
+ * Written for research purpose
+ * 
+ * This is a minimization problem
+ * 
  */
 public class DPOP {
     
@@ -36,16 +41,20 @@ public class DPOP {
     public static void main(String[] args) throws InterruptedException, IOException {
         //ExecutePython.callPythonScript();
         
-        //DFSDPOP dfsdpop = new DFSDPOP();
-        //dfsdpop.executeDfsDpop();
+        DFSDPOP dfsdpop = new DFSDPOP();
+        dfsdpop.executeDfsDpop();
         
         BFSDPOP bfsDpop = new BFSDPOP();
         bfsDpop.executeBfsDpop();
         
-        //System.out.println("Execution Time for DFS DPOP: " + dfsdpop.timElapsed + "ms");
-        System.out.println("Execution Time for BFS DPOP: " + bfsDpop.timElapsed + "ms");
+        BrcBFSDPOP brcbfsdpop = new BrcBFSDPOP();
+        brcbfsdpop.executeBfsDpop();
         
-        //String str = String.valueOf(Constants.nodeCnt) + ", " + String.valueOf(dfsdpop.timElapsed) + ", " + String.valueOf(bfsDpop.timElapsed) + "\n";
+        System.out.println("Execution Time for DFS DPOP: " + dfsdpop.timElapsed + "ms");
+        System.out.println("Execution Time for BFS DPOP: " + bfsDpop.timElapsed + "ms");
+        System.out.println("Execution Time for Brc BFS DPOP: " + brcbfsdpop.timElapsed + "ms");
+        
+        String str = String.valueOf(Constants.nodeCnt) + ", " + String.valueOf(dfsdpop.timElapsed) + ", " + String.valueOf(bfsDpop.timElapsed) + ", " + String.valueOf(brcbfsdpop.timElapsed) + "\n";
         String fileName = "timeOutput.csv";
         //FileIO.FileAppend.appendStrToFile(fileName, str);
     }

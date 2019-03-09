@@ -5,8 +5,10 @@
  */
 package dpop;
 
+import Satisfiability.Constraints;
 import UtilityMessages.Assignments;
 import UtilityMessages.UTILMessage;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,50 +31,66 @@ public class UtilPropagationPhase {
     }
 
     public void recursiveHelper(Set<Integer> leaf_set) {
-        boolean revised = false;
-        Set<Integer> leaf_set_temp = new HashSet<Integer>();
-        
-        System.out.println("Current leaf set status");
-        for(Integer nodeInt : leaf_set) {
-            int node = Integer.valueOf((int) nodeInt);
-            System.out.print(node + " ");
-        }
-        System.out.println("");
-        
-        for (Integer nodeInt : leaf_set) {
-            int node = Integer.valueOf((int) nodeInt);
+        Set<Integer> delete_set = new HashSet<Integer>();
+        Set<Integer> leaf_set_iterator = new HashSet<Integer>(leaf_set);
+        int sendUtil[] = new int[Constants.domainEnd + 1];
+        Arrays.fill(sendUtil, Constants.max_int);
+
+        for (Integer curLeaf : leaf_set_iterator) {
             
-            if(node == Constants.root) {
+            int curLeafVal = curLeaf;
+            
+            
+            if (curLeafVal == Constants.root) {
+                return;
+            }
+
+            int par = graph[curLeafVal].parent.id;
+            
+            if (graph[curLeafVal].numAckChild != graph[curLeafVal].child.size()) {
                 continue;
-            }
-            System.out.println("lol " + node);
-            node = graph[node].parent.id;
-            leaf_set_temp.add(new Integer(node));
-        }
-        
-
-        for (Integer nodeInt : leaf_set_temp) {
-            int node = Integer.valueOf((int) nodeInt);
-            if (node != 1) {
-                revised = true;
+            } else {
+                delete_set.add(curLeaf);
+                if (graph[curLeafVal].locallyReducible == false) {
+                    for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
+                        graph[par].receivedUtils[i] += sendUtil[i];
+                    }
+                    continue;
+                }
             }
 
-            for (Integer temp : graph[node].domain) {
-                System.out.println("node: " + node + " val: " + Integer.valueOf((int) temp));
-                final_.update(node, Integer.valueOf((int) temp));
+            // projection and join operation
+            
+            for(Integer i: graph[curLeafVal].domain) {
+                int mini = Constants.max_int;
+                for(Integer j: graph[par].domain) {
+                    mini = Math.min(mini, Constraints.constraints[curLeafVal][par][j][i]);
+                }
+                mini += graph[curLeafVal].receivedUtils[i];
+                sendUtil[i] = mini;
+            }
+
+
+            for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
+                graph[par].receivedUtils[i] += sendUtil[i];
+            }
+
+            graph[par].numAckChild++;
+            leaf_set.add(par);
+
+            for (Node node : graph[curLeafVal].pseudoNeighbor) {
+                for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
+                    graph[node.id].receivedUtils[i] += sendUtil[i];
+                }
             }
 
         }
-        
-        System.out.println("done");
 
-        if (!revised) {
-            return;
-        } else {
-            recursiveHelper(leaf_set_temp);
-            return;
+        for (Integer deleteLeaf : delete_set) {
+            leaf_set.remove(deleteLeaf);
         }
 
+        recursiveHelper(leaf_set);
     }
 
     public void executeUtilPropagation() {
@@ -83,35 +101,6 @@ public class UtilPropagationPhase {
                 leaf_set.add(new Integer(i));
             }
         }
-
-        boolean firstAssignment = true;
-
-        for (Integer nodeInt : leaf_set) {
-            int node = Integer.valueOf((int) nodeInt);
-
-            for (Integer temp : graph[node].domain) {
-                int val = Integer.valueOf((int) temp);
-                Assignments newAss = new Assignments();
-                newAss.assignedValues[node] = val;
-                
-                if (firstAssignment) {
-                    final_.assign.add(newAss);
-                } else {
-                    final_.update(node, val);
-                }
-            }
-            firstAssignment = false;
-        }
-
-//        System.out.println("-----------------------------");
-//        for (Assignments temp : final_.assign) {
-//            System.out.println("Cost: " + temp.cost);
-//            for (int i = 1; i <= Constants.nodeCnt; i++) {
-//                System.out.println(i + " : " + temp.assignedValues[i]);
-//            }
-//        }
-//
-//        System.out.println("-------------------------");
 
         recursiveHelper(leaf_set);
     }

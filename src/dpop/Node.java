@@ -33,17 +33,19 @@ public class Node extends Thread {
     public int valueAssigned = Constants.restricted;
     public int receivedUtils[];
     public int pseudoNeighborSize;
+    public int numAckChild;
 
     public Node(int id) {
         parent = null;
         level = Constants.max_int;
         neighborCount = 0;
         this.id = id;
+        numAckChild = 0;
         receivedUtils = new int[Constants.domainEnd+1];
         Arrays.fill(receivedUtils, 0);
     }
 
-    public Node(Node parent, List child, List pseudoNeighbor, int level, List neighbors, int neighborCount, int id, List<Integer> domain, boolean locallyReducible, int valueAssigned) {
+    public Node(Node parent, List child, List pseudoNeighbor, int level, List neighbors, int neighborCount, int id, List<Integer> domain, boolean locallyReducible, int valueAssigned, int receivedUtils[], int pseudoNeighborSize, int numAckChild) {
         this.parent = parent;
         this.child = child;
         this.pseudoNeighbor = pseudoNeighbor;
@@ -54,10 +56,13 @@ public class Node extends Thread {
         this.domain = domain;
         this.locallyReducible = locallyReducible;
         this.valueAssigned = valueAssigned;
+        this.receivedUtils = receivedUtils;
+        this.pseudoNeighborSize = pseudoNeighborSize;
+        this.numAckChild = numAckChild;
     }
     
     public Node deepcopy() {
-        return new Node(parent, child, pseudoNeighbor, level, neighbors, neighborCount, id, domain, locallyReducible, valueAssigned);
+        return new Node(parent, child, pseudoNeighbor, level, neighbors, neighborCount, id, domain, locallyReducible, valueAssigned, receivedUtils, pseudoNeighborSize, numAckChild);
     }
 
     void addNeighbor(Node node) {

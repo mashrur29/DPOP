@@ -15,6 +15,8 @@ import java.util.Arrays;
 public class Constraints {
 
     public static int constraints[][][][] = new int[Constants.maxAgents][Constants.maxAgents][Constants.maxAgents][Constants.maxAgents];
+    public static int isHard[][] = new int[Constants.maxAgents][Constants.maxAgents];
+    public static int vrm[][][][] = new int[Constants.maxAgents][Constants.maxAgents][Constants.maxAgents][Constants.maxAgents];
     
     public static void initArray() {
         for (int[][][] row : Constraints.constraints) {
@@ -23,6 +25,18 @@ public class Constraints {
                     Arrays.fill(rowCol, Constants.max_int);
                 }
             }
+        }
+        
+        for (int[][][] row : Constraints.vrm) {
+            for (int[][] rowColumn : row) {
+                for (int[] rowCol : rowColumn) {
+                    Arrays.fill(rowCol, 0);
+                }
+            }
+        }
+        
+        for(int[] row: isHard) {
+            Arrays.fill(row, -1);
         }
     }
     
