@@ -5,6 +5,7 @@
  */
 package dpop;
 
+import FileIO.FileCopy;
 import PseudoTreeConstruction.LayerMessage;
 import PythonProcedure.ExecutePython;
 import UtilityMessages.Assignments;
@@ -38,9 +39,8 @@ public class DPOP {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws InterruptedException, IOException {
-        //ExecutePython.callPythonScript();
-        
+    
+    public static void executeSimultion() throws InterruptedException, IOException {
         DFSDPOP dfsdpop = new DFSDPOP();
         dfsdpop.executeDfsDpop();
         
@@ -56,7 +56,31 @@ public class DPOP {
         
         String str = String.valueOf(Constants.nodeCnt) + ", " + String.valueOf(dfsdpop.timElapsed) + ", " + String.valueOf(bfsDpop.timElapsed) + ", " + String.valueOf(brcbfsdpop.timElapsed) + "\n";
         String fileName = "timeOutput.csv";
-        //FileIO.FileAppend.appendStrToFile(fileName, str);
+        FileIO.FileAppend.appendStrToFile(fileName, str);
+    }
+    
+    public static void main(String[] args) throws InterruptedException, IOException {
+        //ExecutePython.callPythonScript();
+        FileCopy.fileToFileCopy("/home/mashrur/Dropbox/Thesis/DPOP/DPOP/simulations/simulation1.txt", "inputRandomGraph");
+        testSimulation();
+    }
+    
+    public static void testSimulation() throws InterruptedException, IOException {
+        System.out.println("This is a test simulation");
+        DFSDPOP dfsdpop = new DFSDPOP();
+        dfsdpop.executeDfsDpop();
+        
+        BFSDPOP bfsDpop = new BFSDPOP();
+        bfsDpop.executeBfsDpop();
+        
+        BrcBFSDPOP brcbfsdpop = new BrcBFSDPOP();
+        brcbfsdpop.executeBfsDpop();
+        
+        System.out.println("Execution Time for DFS DPOP: " + dfsdpop.timElapsed + "ms");
+        System.out.println("Execution Time for BFS DPOP: " + bfsDpop.timElapsed + "ms");
+        System.out.println("Execution Time for Brc BFS DPOP: " + brcbfsdpop.timElapsed + "ms");
+        
+        String str = String.valueOf(Constants.nodeCnt) + ", " + String.valueOf(dfsdpop.timElapsed) + ", " + String.valueOf(bfsDpop.timElapsed) + ", " + String.valueOf(brcbfsdpop.timElapsed) + "\n";
     }
     
 }

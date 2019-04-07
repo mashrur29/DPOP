@@ -44,6 +44,15 @@ public class Constraints {
         if (type == 1) {
             return u <= v;
         }
+        else if(type == 2) {
+            return u >= v;
+        }
+        else if(type == 3) {
+            return u == v + 1;
+        }
+        else if(type == 4) {
+            return u == v;
+        }
         return true;
     }
 
