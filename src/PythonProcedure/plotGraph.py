@@ -22,5 +22,5 @@ if __name__ == '__main__':
     plt.ylabel('Performance (msec)')
     plt.title('Comparison of DPOP Variants')
     plt.legend(loc='upper left')
-    # plt.savefig('node_variable_sized_domain.png')
+    plt.savefig('node_time.png')
     plt.show()

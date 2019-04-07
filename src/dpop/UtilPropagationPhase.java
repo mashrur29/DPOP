@@ -54,11 +54,11 @@ public class UtilPropagationPhase {
                     for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
                         graph[par].receivedUtils[i] += sendUtil[i];
                     }
-                    for (Node node : graph[curLeafVal].pseudoNeighbor) {
-                        for (Integer i : graph[node.id].domain) {
-                            graph[node.id].receivedUtils[i] += sendUtil[i];
-                        }
-                    }
+//                    for (Node node : graph[curLeafVal].pseudoNeighbor) {
+//                        for (Integer i : graph[node.id].domain) {
+//                            graph[node.id].receivedUtils[i] += sendUtil[i];
+//                        }
+//                    }
 
                     continue;
                 }

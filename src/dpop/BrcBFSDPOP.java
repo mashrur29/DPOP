@@ -45,34 +45,20 @@ public class BrcBFSDPOP {
         removeCluster.removeCluster();
         graph = sim.graph;
         
-        Instant start = Instant.now();
+        
         System.out.println("");
         System.out.println("Util Propagation Starting");
         
-        
+        Instant start = Instant.now();
         UtilPropagationPhase utilphase = new UtilPropagationPhase(graph);
         utilphase.executeUtilPropagation();
         
         System.out.println("Util Propagation Phase Complete ");
         
-        for(int i=Constants.domainStart; i<=Constants.domainEnd; i++) {
-            System.out.print(graph[Constants.root].receivedUtils[i] + " ");
-        }
-        System.out.println("");
-        
         int assignmentCnt = 0;
         int minCost = Constants.max_int;
         Assignments optimalAssignment = null;
 
-        for (Assignments temp : utilphase.final_.assign) {
-            assignmentCnt++;
-            
-            if (temp.cost < minCost) {
-                minCost = temp.cost;
-                optimalAssignment = temp;
-            }
-
-        }
         
         
         valuePropagationPhase valuePropagate = new valuePropagationPhase(graph, optimalAssignment);

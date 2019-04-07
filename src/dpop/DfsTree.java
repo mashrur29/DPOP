@@ -94,7 +94,8 @@ public class DfsTree {
         strLine = br.readLine();
         String[] stringArrayTemp = strLine.split("\\s+");
 
-        nodeCnt = Constants.nodeCnt = Integer.parseInt(stringArrayTemp[0]);
+        nodeCnt = Integer.parseInt(stringArrayTemp[0]);
+        Constants.nodeCnt = nodeCnt;
         Constants.maxAgents = nodeCnt;
         int edgeCnt = Integer.parseInt(stringArrayTemp[1]);
         root = Constants.root = Integer.parseInt(stringArrayTemp[2]);
