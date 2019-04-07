@@ -37,16 +37,15 @@ public class UtilPropagationPhase {
         Arrays.fill(sendUtil, Constants.max_int);
 
         for (Integer curLeaf : leaf_set_iterator) {
-            
+
             int curLeafVal = curLeaf;
-            
-            
+
             if (curLeafVal == Constants.root) {
                 return;
             }
 
             int par = graph[curLeafVal].parent.id;
-            
+
             if (graph[curLeafVal].numAckChild != graph[curLeafVal].child.size()) {
                 continue;
             } else {
@@ -55,21 +54,25 @@ public class UtilPropagationPhase {
                     for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
                         graph[par].receivedUtils[i] += sendUtil[i];
                     }
+                    for (Node node : graph[curLeafVal].pseudoNeighbor) {
+                        for (Integer i : graph[node.id].domain) {
+                            graph[node.id].receivedUtils[i] += sendUtil[i];
+                        }
+                    }
+
                     continue;
                 }
             }
 
             // projection and join operation
-            
-            for(Integer i: graph[curLeafVal].domain) {
+            for (Integer i : graph[curLeafVal].domain) {
                 int mini = Constants.max_int;
-                for(Integer j: graph[par].domain) {
+                for (Integer j : graph[par].domain) {
                     mini = Math.min(mini, Constraints.constraints[curLeafVal][par][j][i]);
                 }
                 mini += graph[curLeafVal].receivedUtils[i];
                 sendUtil[i] = mini;
             }
-
 
             for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
                 graph[par].receivedUtils[i] += sendUtil[i];
@@ -79,7 +82,7 @@ public class UtilPropagationPhase {
             leaf_set.add(par);
 
             for (Node node : graph[curLeafVal].pseudoNeighbor) {
-                for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
+                for (Integer i : graph[node.id].domain) {
                     graph[node.id].receivedUtils[i] += sendUtil[i];
                 }
             }

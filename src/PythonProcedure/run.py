@@ -52,5 +52,9 @@ def generateCOP(nodeCnt, edgeCnt, root, domainSiz):
     f.close()
 
 
+def max_edge(n):
+    return (n*(n-1)//2)
+
 if __name__ == '__main__':
-    generateCOP(5, 8, 1, 6)
+    node = 30
+    generateCOP(node, randInt(node+1, max_edge(node)), 1, 20)

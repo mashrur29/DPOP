@@ -22,7 +22,14 @@ public class valuePropagationPhase {
     }
     
     public void recursiveHelper(int node) {
-        graph[node].valueAssigned = optimalAssignment.assignedValues[node];
+        int maxi = Constants.min_int;
+        
+        for(int i = 0; i<graph[node].receivedUtils.length; i++) {
+            if(graph[node].receivedUtils[i] > maxi) {
+                maxi = graph[node].receivedUtils[i];
+                graph[node].valueAssigned = i;
+            }
+        }
         
         for (Node nod : graph[node].child) {
             recursiveHelper(nod.id);
