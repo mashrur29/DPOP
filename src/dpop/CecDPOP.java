@@ -16,20 +16,20 @@ import java.time.Instant;
  *
  * @author mashrur
  */
-public class BrcBFSDPOP {
+public class CecDPOP {
 
     public Node graph[];
     public double timElapsed;
     
 
-    public BrcBFSDPOP() {
+    public CecDPOP() {
     }
     
-    public BrcBFSDPOP(Node[] graph) {
+    public CecDPOP(Node[] graph) {
         this.graph = graph;
     }
 
-    public void executeBfsDpop() throws InterruptedException, IOException {
+    public void executeCecDpop() throws InterruptedException, IOException {
         BfsTree sim = new BfsTree();
         sim.constructBfsTree();
         

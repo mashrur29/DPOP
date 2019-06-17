@@ -43,7 +43,11 @@ public class UtilPropagationPhase {
             if (curLeafVal == Constants.root) {
                 return;
             }
-
+            
+            if(graph[curLeaf].parent == null) {
+                continue;
+            }
+            
             int par = graph[curLeafVal].parent.id;
 
             if (graph[curLeafVal].numAckChild != graph[curLeafVal].child.size()) {

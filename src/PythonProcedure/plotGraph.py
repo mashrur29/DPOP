@@ -10,7 +10,7 @@ if __name__ == '__main__':
         reader = csv.DictReader(csvfile)
 
         for row in reader:
-            x.append(int(row['nodeCnt']))
+            x.append(float(row['density']))
             dpop.append(float(row['DPOP']))
             bfsdpop.append(float(row['BfsDpop']))
             brcbfsdpop.append(float(row['BrcBfsDpop']))
@@ -18,9 +18,9 @@ if __name__ == '__main__':
     plt.plot(x, dpop, color='b', label='DPOP')
     plt.plot(x, bfsdpop, color='g', label='Bfs DPOP')
     plt.plot(x, brcbfsdpop, color='r', label='Brc Bfs DPOP')
-    plt.xlabel('Number of Node')
+    plt.xlabel('Graph Density')
     plt.ylabel('Performance (msec)')
     plt.title('Comparison of DPOP Variants')
     plt.legend(loc='upper left')
-    plt.savefig('node_time.png')
+    plt.savefig('density_time.png')
     plt.show()

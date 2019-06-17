@@ -19,4 +19,7 @@ public class Constants {
     public static int domainEnd = 3;
     public static int restricted = 1000000001;
     public static int min_int = -100000001;
+    public static int edgeCnt = -100000001;
+    public static String filePathUbuntu = "/home/mashrur/Dropbox/Thesis/DPOP/DPOP/simulations/VariableDensity/simulation";
+    public static String filePathWindows = "";
 }

@@ -44,14 +44,18 @@ public class DPOP {
         BFSDPOP bfsDpop = new BFSDPOP();
         bfsDpop.executeBfsDpop();
 
-        BrcBFSDPOP brcbfsdpop = new BrcBFSDPOP();
-        brcbfsdpop.executeBfsDpop();
+        CecDPOP cecdpop = new CecDPOP();
+        cecdpop.executeCecDpop();
+        
+        BrcDPOP brcdpop = new BrcDPOP();
+        brcdpop.executeBrcDpop();
 
         System.out.println("Execution Time for DFS DPOP: " + dfsdpop.timElapsed + "ms");
         System.out.println("Execution Time for BFS DPOP: " + bfsDpop.timElapsed + "ms");
-        System.out.println("Execution Time for Brc BFS DPOP: " + brcbfsdpop.timElapsed + "ms");
+        System.out.println("Execution Time for BRC DPOP: " + brcdpop.timElapsed + "ms");
+        System.out.println("Execution Time for Cec DPOP: " + cecdpop.timElapsed + "ms");
 
-        String str = String.valueOf(Constants.nodeCnt) + "," + String.valueOf(dfsdpop.timElapsed) + "," + String.valueOf(bfsDpop.timElapsed) + "," + String.valueOf(brcbfsdpop.timElapsed) + "\n";
+        String str = String.valueOf(Constants.nodeCnt) + "," + String.valueOf(dfsdpop.timElapsed) + "," + String.valueOf(bfsDpop.timElapsed) + "," + String.valueOf(brcdpop.timElapsed) + "," + String.valueOf(cecdpop.timElapsed) + "\n";
         String fileName = "timeOutput.csv";
         FileIO.FileAppend.appendStrToFile(fileName, str);
     }
@@ -64,30 +68,120 @@ public class DPOP {
             System.out.println(src);
             FileCopy.fileToFileCopy(src, "inputRandomGraph.txt");
 
-            double timeBfs = 0.0, timeDfs = 0.0, timeBrc = 0.0;
-            int nodeCnt = 0;
+            double timeBfs = 0.0, timeDfs = 0.0, timeCec = 0.0, timeBrc = 0.0;
+            int nodeCnt = 0, numTest = 100;
 
-            for (int cnt = 1; cnt <= 100; cnt++) {
+            for (int cnt = 1; cnt <= numTest; cnt++) {
                 DFSDPOP dfsdpop = new DFSDPOP();
                 dfsdpop.executeDfsDpop();
                 nodeCnt = Constants.nodeCnt;
 
-                BrcBFSDPOP brcbfsdpop = new BrcBFSDPOP();
-                brcbfsdpop.executeBfsDpop();
+                CecDPOP cecdpop = new CecDPOP();
+                cecdpop.executeCecDpop();
 
                 BFSDPOP bfsDpop = new BFSDPOP();
                 bfsDpop.executeBfsDpop();
+                
+                BrcDPOP brcdpop = new BrcDPOP();
+                brcdpop.executeBrcDpop();
 
                 timeDfs += dfsdpop.timElapsed;
                 timeBfs += bfsDpop.timElapsed;
-                timeBrc += brcbfsdpop.timElapsed;
+                timeCec += cecdpop.timElapsed;
+                timeBrc += brcdpop.timElapsed;
             }
 
-            timeBfs /= 100.0;
-            timeDfs /= 100.0;
-            timeBrc /= 100.0;
+            timeBfs /= (double)numTest;
+            timeDfs /= (double)numTest;
+            timeCec /= (double)numTest;
+            timeBrc /= (double)numTest;
 
-            String str = String.valueOf(nodeCnt) + "," + String.valueOf(timeDfs) + "," + String.valueOf(timeBfs) + "," + String.valueOf(timeBrc) + "\n";
+            String str = String.valueOf(nodeCnt) + "," + String.valueOf(timeDfs) + "," + String.valueOf(timeBfs) + "," + String.valueOf(timeBrc) + "," + String.valueOf(timeCec) + "\n";
+            String fileName = "timeOutput.csv";
+            FileIO.FileAppend.appendStrToFile(fileName, str);
+        }
+    }
+    
+    public static void domainTimeSimulation() throws IOException, InterruptedException {
+        for (int sim = 1; sim <= 6; sim++) {
+            String src = "/home/mashrur/Dropbox/Thesis/DPOP/DPOP/simulations/VariableDomain/simulation";
+            src += Integer.toString(sim);
+            src += ".txt";
+            System.out.println(src);
+            FileCopy.fileToFileCopy(src, "inputRandomGraph.txt");
+
+            double timeBfs = 0.0, timeDfs = 0.0, timeCec = 0.0, timeBrc= 0.0;
+            int domainCnt = 0, numTest = 100;
+
+            for (int cnt = 1; cnt <= numTest; cnt++) {
+                DFSDPOP dfsdpop = new DFSDPOP();
+                dfsdpop.executeDfsDpop();
+                domainCnt = Constants.domainSize;
+
+                CecDPOP cecdpop = new CecDPOP();
+                cecdpop.executeCecDpop();
+
+                BFSDPOP bfsDpop = new BFSDPOP();
+                bfsDpop.executeBfsDpop();
+                
+                BrcDPOP brcdpop = new BrcDPOP();
+                brcdpop.executeBrcDpop();
+
+                timeDfs += dfsdpop.timElapsed;
+                timeBfs += bfsDpop.timElapsed;
+                timeCec += cecdpop.timElapsed;
+                timeBrc += brcdpop.timElapsed;
+            }
+
+            timeBfs /= (double)numTest;
+            timeDfs /= (double)numTest;
+            timeCec /= (double)numTest;
+            timeBrc /= (double)numTest;
+
+            String str = String.valueOf(domainCnt) + "," + String.valueOf(timeDfs) + "," + String.valueOf(timeBfs) + "," + String.valueOf(timeBrc) + "," + String.valueOf(timeCec) + "\n";
+            String fileName = "timeOutput.csv";
+            FileIO.FileAppend.appendStrToFile(fileName, str);
+        }
+    }
+    
+    public static void densityTimeSimulation() throws IOException, InterruptedException {
+        for (int sim = 1; sim <= 5; sim++) {
+            String src = "/home/mashrur/Dropbox/Thesis/DPOP/DPOP/simulations/VariableDensity/simulation";
+            src += Integer.toString(sim);
+            src += ".txt";
+            System.out.println(src);
+            FileCopy.fileToFileCopy(src, "inputRandomGraph.txt");
+
+            double timeBfs = 0.0, timeDfs = 0.0, timeCec = 0.0, timeBrc = 0.0;
+            double density = 0;
+            int numTest = 100;
+
+            for (int cnt = 1; cnt <= numTest; cnt++) {
+                DFSDPOP dfsdpop = new DFSDPOP();
+                dfsdpop.executeDfsDpop();
+                density = ((2.0 * (double)Constants.edgeCnt) / ((double)Constants.nodeCnt * (double)(Constants.nodeCnt - 1)));
+
+                CecDPOP cecdpop = new CecDPOP();
+                cecdpop.executeCecDpop();
+
+                BFSDPOP bfsDpop = new BFSDPOP();
+                bfsDpop.executeBfsDpop();
+                
+                BrcDPOP brcdpop = new BrcDPOP();
+                brcdpop.executeBrcDpop();
+
+                timeDfs += dfsdpop.timElapsed;
+                timeBfs += bfsDpop.timElapsed;
+                timeCec += cecdpop.timElapsed;
+                timeBrc += brcdpop.timElapsed;
+            }
+
+            timeBfs /= (double)numTest;
+            timeDfs /= (double)numTest;
+            timeCec /= (double)numTest;
+            timeBrc /= (double)numTest;
+
+            String str = String.valueOf(density) + "," + String.valueOf(timeDfs) + "," + String.valueOf(timeBfs) + "," + String.valueOf(timeBrc) + "," + String.valueOf(timeCec) + "\n";
             String fileName = "timeOutput.csv";
             FileIO.FileAppend.appendStrToFile(fileName, str);
         }
@@ -96,8 +190,10 @@ public class DPOP {
     public static void main(String[] args) throws InterruptedException, IOException {
         //ExecutePython.callPythonScript();
         //FileCopy.fileToFileCopy("/home/mashrur/Dropbox/Thesis/DPOP/DPOP/simulations/simulation1.txt", "inputRandomGraph");
-        //testSimulation();
-        nodeTimeSimulation();
+        testSimulation();
+        //nodeTimeSimulation();
+        //densityTimeSimulation();
+        //domainTimeSimulation();
         System.out.println("Complete");
     }
 
@@ -109,14 +205,18 @@ public class DPOP {
         BFSDPOP bfsDpop = new BFSDPOP();
         bfsDpop.executeBfsDpop();
 
-        BrcBFSDPOP brcbfsdpop = new BrcBFSDPOP();
-        brcbfsdpop.executeBfsDpop();
+        CecDPOP cecdpop = new CecDPOP();
+        cecdpop.executeCecDpop();
+        
+        BrcDPOP brcdpop = new BrcDPOP();
+        brcdpop.executeBrcDpop();
 
         System.out.println("Execution Time for DFS DPOP: " + dfsdpop.timElapsed + "ms");
         System.out.println("Execution Time for BFS DPOP: " + bfsDpop.timElapsed + "ms");
-        System.out.println("Execution Time for Brc BFS DPOP: " + brcbfsdpop.timElapsed + "ms");
+        System.out.println("Execution Time for BRC DPOP: " + brcdpop.timElapsed + "ms");
+        System.out.println("Execution Time for Cec DPOP: " + cecdpop.timElapsed + "ms");
 
-        String str = String.valueOf(Constants.nodeCnt) + ", " + String.valueOf(dfsdpop.timElapsed) + ", " + String.valueOf(bfsDpop.timElapsed) + ", " + String.valueOf(brcbfsdpop.timElapsed) + "\n";
+        String str = String.valueOf(Constants.nodeCnt) + ", " + String.valueOf(dfsdpop.timElapsed) + ", " + String.valueOf(bfsDpop.timElapsed) + ", " + String.valueOf(brcdpop.timElapsed) + ", " + String.valueOf(cecdpop.timElapsed) + "\n";
     }
 
 }

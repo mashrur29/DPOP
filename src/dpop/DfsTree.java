@@ -98,6 +98,7 @@ public class DfsTree {
         Constants.nodeCnt = nodeCnt;
         Constants.maxAgents = nodeCnt;
         int edgeCnt = Integer.parseInt(stringArrayTemp[1]);
+        Constants.edgeCnt = edgeCnt;
         root = Constants.root = Integer.parseInt(stringArrayTemp[2]);
 
         strLine = br.readLine();

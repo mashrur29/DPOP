@@ -134,6 +134,7 @@ public class BfsTree {
         nodeCnt = Constants.nodeCnt = Integer.parseInt(stringArrayTemp[0]);;
         Constants.maxAgents = nodeCnt;
         edgeCnt = Integer.parseInt(stringArrayTemp[1]);
+        Constants.edgeCnt = edgeCnt;
         root = Constants.root = Integer.parseInt(stringArrayTemp[2]);
 
         strLine = br.readLine();
