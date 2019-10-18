@@ -30,6 +30,7 @@ public class CecDPOP {
     }
 
     public void executeCecDpop() throws InterruptedException, IOException {
+        Instant start = Instant.now();
         BfsTree sim = new BfsTree();
         sim.constructBfsTree();
         
@@ -49,7 +50,7 @@ public class CecDPOP {
         System.out.println("");
         System.out.println("Util Propagation Starting");
         
-        Instant start = Instant.now();
+        
         UtilPropagationPhase utilphase = new UtilPropagationPhase(graph);
         utilphase.executeUtilPropagation();
         

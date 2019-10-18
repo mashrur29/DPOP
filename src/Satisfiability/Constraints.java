@@ -42,10 +42,10 @@ public class Constraints {
     
     public static boolean satisfies(int u, int v, int type) {
         if (type == 1) {
-            return u <= v;
+            return u < v;
         }
         else if(type == 2) {
-            return u >= v;
+            return u > v;
         }
         else if(type == 3) {
             return u == v + 1;

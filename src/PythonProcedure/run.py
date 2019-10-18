@@ -5,7 +5,7 @@ import numpy
 import networkx as nw
 
 hardStart = 1
-hardEnd = 1
+hardEnd = 2
 
 def randInt(l, r):
     return random.randint(l, r)
@@ -53,7 +53,7 @@ def generateCOP(nodeCnt, edgeCnt, root, domainSiz):
 
     f.close()
 
-def generateCOPDensity(nodeCnt, edgeCnt, root, domainSiz, filename):
+def generateCOPDensity(g, nodeCnt, edgeCnt, root, domainSiz, filename="/home/mashrur/Dropbox/Thesis/DPOP/DPOP/inputRandomGraph.txt"):
     f = open(filename, "w+")
     f.write(str(nodeCnt))
     f.write(" ")
@@ -68,7 +68,7 @@ def generateCOPDensity(nodeCnt, edgeCnt, root, domainSiz, filename):
     f.write("\n")
 
     #g = nw.gnm_random_graph(nodeCnt, edgeCnt, False)
-    g = nw.scale_free_graph(nodeCnt, edgeCnt, False)
+
 
     for edge in g.edges:
         type = randInt(0, 1)
@@ -97,7 +97,7 @@ def generateCOPDensity(nodeCnt, edgeCnt, root, domainSiz, filename):
     f.close()
 
 
-def generateCOPDomain(g, nodeCnt, edgeCnt, root, domainSiz, filename):
+def generateCOPDomain(g, nodeCnt, edgeCnt, root, domainSiz, filename="/home/mashrur/Dropbox/Thesis/DPOP/DPOP/inputRandomGraph.txt"):
     f = open(str(filename), "w+")
     f.write(str(nodeCnt))
     f.write(" ")
@@ -140,43 +140,80 @@ def generateCOPDomain(g, nodeCnt, edgeCnt, root, domainSiz, filename):
 def variableDomain():
     filename = "/home/mashrur/Dropbox/Thesis/DPOP/DPOP/simulations/VariableDomain/"
     ind = 1
-    g = nw.gnm_random_graph(100, 50, False)
+    nodeCnt = 50
+    edgeCnt = 612
+    g = nw.gnm_random_graph(nodeCnt, edgeCnt, False)
+    domainSiz = 40
+    generateCOPDomain(g, nodeCnt, edgeCnt, 1, domainSiz)
 
-    for domainSiz in range(5, 35, 5):
-        tmp = deepcopy(filename)
-        tmp += "simulation"
-        tmp += str(ind)
-        tmp += ".txt"
-        ind += 1
-        generateCOPDomain(g, 100, 50, 1, domainSiz, tmp)
+
 
     print('Complete')
 
 def variableNode():
-    node = 30
-    generateCOP(node, randInt(node+1, max_edge(node)), 1, 20)
+    node = 50
+    edgeCnt = int((0.5*node*(node-1))//2)
+    domainSz = 10
+    generateCOP(node, edgeCnt, 1, domainSz)
 
 
 def variableDensity():
     filename = "/home/mashrur/Dropbox/Thesis/DPOP/DPOP/ScaleFreeSimulations/VariableDensity/"
-    node = 30
-    ind = 1
-
-    for density in numpy.arange(0.1, 1.0, 0.2):
-        edge = (density * (node * (node - 1))) // 2
-        edge = int(edge)
-        tmp = deepcopy(filename)
-        tmp += "simulation"
-        tmp += str(ind)
-        tmp += ".txt"
-        ind += 1
-        generateCOPDensity(node, edge, 1, 20, tmp)
+    nodeCnt = 50
+    density = 0.9
+    edgeCnt = int((density*nodeCnt*(nodeCnt-1))//2)
+    g = nw.gnm_random_graph(nodeCnt, edgeCnt, False)
+    generateCOPDensity(g, nodeCnt, edgeCnt, 1, 10)
     print('Complete')
 
 def max_edge(n):
     return (n*(n-1)//2)
 
+
+def generateCOPRLFA(nodeCnt, edgeCnt, root, domainSiz):
+    f = open("/home/mashrur/Dropbox/Thesis/DPOP/DPOP/inputRandomGraph.txt", "w+")
+    f.write(str(nodeCnt))
+    f.write(" ")
+    f.write(str(edgeCnt))
+    f.write(" ")
+    f.write(str(root))
+
+    f.write("\n")
+    f.write(str(1))
+    f.write(" ")
+    f.write(str(domainSiz))
+    f.write("\n")
+
+    g = nw.gnm_random_graph(nodeCnt, edgeCnt, False)
+
+    for edge in g.edges:
+        type = randInt(0, 1)
+        f.write(str(edge[0] + 1))
+        f.write(" ")
+        f.write(str(edge[1] + 1))
+        f.write(" ")
+        f.write(str(type))
+        f.write("\n")
+
+        cost = randInt(hardStart, hardEnd)
+        for i in range(domainSiz):
+            for j in range(domainSiz):
+                if (j > 0): f.write(" ")
+                f.write(str(cost))
+            f.write("\n")
+
+
+
+    f.close()
+
+def variableNodeRLFA():
+    node = 40
+    edgeCnt = int((0.5 * node * (node - 1)) // 2)
+    domainSz = 10
+    generateCOPRLFA(node, edgeCnt, 1, domainSz)
+
 if __name__ == '__main__':
     #variableNode()
     #variableDomain()
-    variableDensity()
+    #variableDensity()
+    variableNodeRLFA()

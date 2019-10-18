@@ -31,11 +31,12 @@ public class DFSDPOP {
     }
 
     public void executeDfsDpop() throws InterruptedException, IOException {
+        Instant start = Instant.now();
         DfsTree sim = new DfsTree();
         sim.constructDfsTree();
         this.setGraph(sim.graph);
 
-        Instant start = Instant.now();
+        
         System.out.println("");
         System.out.println("Util Propagation Starting");
 
@@ -59,7 +60,8 @@ public class DFSDPOP {
         }
 
         valuePropagationPhase valuePropagate = new valuePropagationPhase(graph, optimalAssignment);
-
+        valuePropagate.executeValuePropagationPhase();
+        
         System.out.println("Value Propagation Complete");
 
         Instant finish = Instant.now();

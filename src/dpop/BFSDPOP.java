@@ -31,13 +31,14 @@ public class BFSDPOP {
     }
 
     public void executeBfsDpop() throws InterruptedException, IOException {
+        Instant start = Instant.now();
         BfsTree sim = new BfsTree();
         sim.constructBfsTree();
         nonDistributedClusterRemoving removeCluster = new nonDistributedClusterRemoving(sim.graph);
         removeCluster.removeCluster();
         graph = sim.graph;
         
-        Instant start = Instant.now();
+        
         System.out.println("");
         System.out.println("Util Propagation Starting");
         

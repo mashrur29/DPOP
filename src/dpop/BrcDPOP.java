@@ -29,6 +29,7 @@ public class BrcDPOP {
     }
 
     public void executeBrcDpop() throws InterruptedException, IOException {
+        Instant start = Instant.now();
         DfsTree sim = new DfsTree();
         sim.constructDfsTree();
 
@@ -46,7 +47,7 @@ public class BrcDPOP {
         System.out.println("");
         System.out.println("Util Propagation Starting");
 
-        Instant start = Instant.now();
+        
         UtilPropagationPhase utilphase = new UtilPropagationPhase(graph);
         utilphase.executeUtilPropagation();
 

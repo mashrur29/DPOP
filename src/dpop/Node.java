@@ -41,7 +41,7 @@ public class Node extends Thread {
         neighborCount = 0;
         this.id = id;
         numAckChild = 0;
-        receivedUtils = new int[Constants.domainEnd+1];
+        receivedUtils = new int[100];
         Arrays.fill(receivedUtils, 0);
     }
 

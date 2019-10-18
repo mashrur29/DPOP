@@ -1,0 +1,13 @@
+Runtime Reduction:
+
+Random graph->
+Domain vs time: 49 - 75% (average: 62.94%)
+Density vs time: 47 - 85% (average: 69.95%)
+Node vs time: 17 - 81% (average: 62.5%)
+
+Distributed RLFA->
+Node vs time: 27 - 75% (average: 61.93%)
+
+
+Message size Reduction:
+Not so significant (average of 5% compared to BrC-DPOP)

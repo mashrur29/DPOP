@@ -28,14 +28,16 @@ public class UtilPropagationPhase {
 
     public UtilPropagationPhase(Node[] graph) {
         this.graph = graph;
+        leaf = new LinkedList<Node>();
     }
 
     public void recursiveHelper(Set<Integer> leaf_set) {
         Set<Integer> delete_set = new HashSet<Integer>();
+        //System.out.println(leaf_set.size());
         Set<Integer> leaf_set_iterator = new HashSet<Integer>(leaf_set);
         int sendUtil[] = new int[Constants.domainEnd + 1];
         Arrays.fill(sendUtil, Constants.max_int);
-
+        
         for (Integer curLeaf : leaf_set_iterator) {
 
             int curLeafVal = curLeaf;
@@ -67,12 +69,25 @@ public class UtilPropagationPhase {
                     continue;
                 }
             }
+            
+            
+//            System.out.println(curLeafVal + " " + par);
+//            for(Integer i1 : graph[par].domain) {
+//                for(Integer j1 : graph[curLeafVal].domain) {
+//                    System.out.print(Constraints.constraints[curLeafVal][par][j1][i1] + " ");
+//                }
+//                System.out.println("");
+//            }
 
             // projection and join operation
-            for (Integer i : graph[curLeafVal].domain) {
+            for (Integer i : graph[par].domain) {
                 int mini = Constants.max_int;
-                for (Integer j : graph[par].domain) {
-                    mini = Math.min(mini, Constraints.constraints[curLeafVal][par][j][i]);
+                int id = 0;
+                for (Integer j : graph[curLeafVal].domain) {
+                    if(Constraints.constraints[curLeafVal][par][j][i] < mini) {
+                        mini = Constraints.constraints[curLeafVal][par][j][i];
+                        id = j;
+                    }
                 }
                 mini += graph[curLeafVal].receivedUtils[i];
                 sendUtil[i] = mini;
@@ -108,8 +123,19 @@ public class UtilPropagationPhase {
                 leaf_set.add(new Integer(i));
             }
         }
-
+        
+        
         recursiveHelper(leaf_set);
+        
+        System.out.println("Received Utils");
+        for(int i = 1; i<=Constants.nodeCnt; i++) {
+            System.out.print(i + ": ");
+            for(int j = Constants.domainStart; j<=Constants.domainEnd; j++) {
+                System.out.print("" + graph[i].receivedUtils[j] + "  ");
+            }
+            System.out.println("");
+        }
+        leaf_set.clear();
     }
 
 }

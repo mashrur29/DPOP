@@ -89,6 +89,127 @@ public class BfsTree {
 
     }
 
+    void simulation2() {
+        nodeCnt = Constants.nodeCnt = 7;
+        root = Constants.root = 1;
+        graph = new Node[Constants.nodeCnt + 1];
+        Constants.maxAgents = nodeCnt;
+        Constants.edgeCnt = 7;
+
+        for (int i = 0; i <= nodeCnt; i++) {
+            graph[i] = new Node(i);
+        }
+
+        for (int i = 1; i <= nodeCnt; i++) {
+            for (int j = 0; j < 5; j++) {
+                graph[i].domain.add(new Integer(j));
+            }
+        }
+        
+
+        graph[1].addNeighbor(graph[2].deepcopy());
+        graph[2].addNeighbor(graph[1].deepcopy());
+        
+        graph[1].addNeighbor(graph[3].deepcopy());
+        graph[3].addNeighbor(graph[1].deepcopy());
+        
+        graph[4].addNeighbor(graph[2].deepcopy());
+        graph[2].addNeighbor(graph[4].deepcopy());
+        
+        graph[3].addNeighbor(graph[7].deepcopy());
+        graph[7].addNeighbor(graph[3].deepcopy());
+        
+        graph[5].addNeighbor(graph[2].deepcopy());
+        graph[2].addNeighbor(graph[5].deepcopy());
+        
+        graph[5].addNeighbor(graph[6].deepcopy());
+        graph[6].addNeighbor(graph[5].deepcopy());
+        
+        graph[3].addNeighbor(graph[6].deepcopy());
+        graph[6].addNeighbor(graph[3].deepcopy());
+        
+        Constants.domainStart = 0;
+        Constants.domainEnd = 4;
+        
+        for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) { // 2-4
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                Constraints.constraints[2][4][i][j] = 10;
+                Constraints.constraints[4][2][j][i] = 10;
+            }
+        }
+
+        for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) { // 3-7
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                Constraints.constraints[3][7][i][j] = 3;
+                Constraints.constraints[7][3][j][i] = 3;
+            }
+        }
+        
+        for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) { // 3-7
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                Constraints.constraints[5][6][i][j] = 2;
+                Constraints.constraints[6][5][j][i] = 2;
+            }
+        }
+        
+        Constraints.isHard[1][2] = 1;
+        Constraints.isHard[2][1] = 2;
+        for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) { // Hard Constraint 1-2
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                if (i < j) {
+                    Constraints.constraints[1][2][i][j] = 0;
+                    Constraints.constraints[2][1][j][i] = 0;
+                } else {
+                    Constraints.constraints[1][2][i][j] = Constants.restricted;
+                    Constraints.constraints[2][1][j][i] = Constants.restricted;
+                }
+            }
+        }
+        
+        Constraints.isHard[1][2] = 4;
+        Constraints.isHard[2][1] = 4;
+        for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) { // Hard Constraint 2-5
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                if (i == j) {
+                    Constraints.constraints[2][5][i][j] = 0;
+                    Constraints.constraints[5][2][j][i] = 0;
+                } else {
+                    Constraints.constraints[2][5][i][j] = Constants.restricted;
+                    Constraints.constraints[5][2][j][i] = Constants.restricted;
+                }
+            }
+        }
+        
+        Constraints.isHard[1][2] = 4;
+        Constraints.isHard[2][1] = 4;
+        for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) { // Hard Constraint 1-3
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                if (i == j) {
+                    Constraints.constraints[1][3][i][j] = 0;
+                    Constraints.constraints[3][1][j][i] = 0;
+                } else {
+                    Constraints.constraints[1][3][i][j] = Constants.restricted;
+                    Constraints.constraints[3][1][j][i] = Constants.restricted;
+                }
+            }
+        }
+        
+        Constraints.isHard[3][6] = 2;
+        Constraints.isHard[6][3] = 1;
+        for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) { // Hard Constraint 3-6
+            for (int j = Constants.domainStart; j <= Constants.domainEnd; j++) {
+                if (i > j) {
+                    Constraints.constraints[3][6][i][j] = 0;
+                    Constraints.constraints[6][3][j][i] = 0;
+                } else {
+                    Constraints.constraints[3][6][i][j] = Constants.restricted;
+                    Constraints.constraints[6][3][j][i] = Constants.restricted;
+                }
+            }
+        }
+
+    }
+
     public void constructBfs() {
         int visited[] = new int[Constants.nodeCnt + 1];
         Arrays.fill(visited, 0);
@@ -124,14 +245,15 @@ public class BfsTree {
     }
 
     public void generateSimulation() throws FileNotFoundException, IOException {
-        FileInputStream fstream = new FileInputStream("inputRandomGraph.txt");
+        FileInputStream fstream = new FileInputStream(Constants.inputFile);
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
         String strLine;
         strLine = br.readLine();
         String[] stringArrayTemp = strLine.split("\\s+");
 
-        nodeCnt = Constants.nodeCnt = Integer.parseInt(stringArrayTemp[0]);;
+        nodeCnt = Integer.parseInt(stringArrayTemp[0]);
+        Constants.nodeCnt = nodeCnt;
         Constants.maxAgents = nodeCnt;
         edgeCnt = Integer.parseInt(stringArrayTemp[1]);
         Constants.edgeCnt = edgeCnt;
@@ -168,8 +290,7 @@ public class BfsTree {
 
             graph[u].addNeighbor(graph[v].deepcopy());
             graph[v].addNeighbor(graph[u].deepcopy());
-            
-            
+
             if (type == 0) { // Hard Constraint
                 for (int i = Constants.domainStart; i <= Constants.domainEnd; i++) {
                     strLine = br.readLine();
@@ -206,13 +327,12 @@ public class BfsTree {
 
     public void constructBfsTree() throws InterruptedException, IOException {
         Constraints.initArray();
-        //simulation1();
+        //simulation2();
 
         generateSimulation();
         constructBfs();
-        fixPseudoNeighbor();
-        
-        
+        //fixPseudoNeighbor();
+
 //        for (int i = 1; i <= nodeCnt; i++) {
 //            if (i == root) {
 //                graph[i].level = 0;
